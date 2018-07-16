@@ -203,4 +203,12 @@ abstract public class AbstractCppCodegen extends DefaultCodegen implements Codeg
     public String getTypeDeclaration(String str) {
         return "std::shared_ptr<" + toModelName(str) + ">";
     }
+
+    public String globalInclude(String file) {
+        return "#include <" + file + ">";
+    }
+
+    public String quoteInclude(String file) {
+        return "#include \"" + file + "\"";
+    }
 }

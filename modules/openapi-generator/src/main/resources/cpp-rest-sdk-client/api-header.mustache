@@ -9,7 +9,12 @@
 #define {{apiHeaderGuardPrefix}}_{{classname}}_H_
 
 {{{defaultInclude}}}
+{{#supportingFilesDirectory}}
+#include "{{{supportingFilesDirectory}}}/ApiClient.h"
+{{/supportingFilesDirectory}}
+{{^supportingFilesDirectory}}
 #include "../ApiClient.h"
+{{/supportingFilesDirectory}}
 
 {{#imports}}{{{import}}}
 {{/imports}}
@@ -25,7 +30,7 @@ using namespace {{modelNamespace}};
 class {{declspec}} {{classname}}
 {
 public:
-    {{classname}}( std::shared_ptr<ApiClient> apiClient );
+    {{classname}}( std::shared_ptr<{{{supportingFilesNamespace}}}ApiClient> apiClient );
     virtual ~{{classname}}();
     {{#operation}}
     /// <summary>
@@ -45,7 +50,7 @@ public:
     {{/operation}}
 
 protected:
-    std::shared_ptr<ApiClient> m_ApiClient;
+    std::shared_ptr<{{{supportingFilesNamespace}}}ApiClient> m_ApiClient;
 };
 
 {{#apiNamespaceDeclarations}}
