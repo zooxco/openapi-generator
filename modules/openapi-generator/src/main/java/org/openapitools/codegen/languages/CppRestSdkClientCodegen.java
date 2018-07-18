@@ -151,19 +151,7 @@ public class CppRestSdkClientCodegen extends AbstractCppCodegen {
                 Arrays.asList("int", "char", "bool", "long", "float", "double", "int32_t", "int64_t"));
 
         typeMapping = new HashMap<String, String>();
-        typeMapping.put("date", "utility::datetime");
-        typeMapping.put("DateTime", "utility::datetime");
-        typeMapping.put("string", "utility::string_t");
-        typeMapping.put("integer", "int32_t");
-        typeMapping.put("long", "int64_t");
-        typeMapping.put("boolean", "bool");
-        typeMapping.put("array", "std::vector");
-        typeMapping.put("map", "std::map");
-        typeMapping.put("file", "HttpContent");
-        typeMapping.put("object", "Object");
-        typeMapping.put("binary", "std::string");
-        typeMapping.put("number", "double");
-        typeMapping.put("UUID", "utility::string_t");
+        updateTypeMapping();
 
         super.importMapping = new HashMap<String, String>();
         updateImportMapping();
@@ -188,9 +176,28 @@ public class CppRestSdkClientCodegen extends AbstractCppCodegen {
         importMapping.put("std::string", globalInclude("string"));
         importMapping.put("utility::string_t", globalInclude("cpprest/details/basic_types.h"));
         importMapping.put("utility::datetime", globalInclude("cpprest/details/basic_types.h"));
-        importMapping.put("HttpContent", quoteInclude(supportingFilePath("HttpContent.h", "../")));
-        importMapping.put("ModelBase", quoteInclude(supportingFilePath("ModelBase.h", "../")));
-        importMapping.put("Object", quoteInclude(supportingFilePath("Object.h", "../")));
+        importMapping.put(supportingFilesNamespace + "HttpContent",
+                quoteInclude(supportingFilePath("HttpContent.h", "../")));
+        importMapping.put(supportingFilesNamespace + "ModelBase",
+                quoteInclude(supportingFilePath("ModelBase.h", "../")));
+        importMapping.put(supportingFilesNamespace + "Object",
+                quoteInclude(supportingFilePath("Object.h", "../")));
+    }
+
+    private void updateTypeMapping() {
+        typeMapping.put("date", "utility::datetime");
+        typeMapping.put("DateTime", "utility::datetime");
+        typeMapping.put("string", "utility::string_t");
+        typeMapping.put("integer", "int32_t");
+        typeMapping.put("long", "int64_t");
+        typeMapping.put("boolean", "bool");
+        typeMapping.put("array", "std::vector");
+        typeMapping.put("map", "std::map");
+        typeMapping.put("file", supportingFilesNamespace + "HttpContent");
+        typeMapping.put("object", supportingFilesNamespace + "Object");
+        typeMapping.put("binary", "std::string");
+        typeMapping.put("number", "double");
+        typeMapping.put("UUID", "utility::string_t");
     }
 
     @Override
@@ -231,9 +238,11 @@ public class CppRestSdkClientCodegen extends AbstractCppCodegen {
         // and should be unset in `additionalProperties` unless explicitly set.
         if(!supportingFilesDirectory.isEmpty()) {
             additionalProperties.put("supportingFilesDirectory", supportingFilesDirectory);
+            updateImportMapping();
         }
         if(!supportingFilesNamespace.isEmpty()) {
             additionalProperties.put("supportingFilesNamespace", supportingFilesNamespace);
+            updateTypeMapping();
         }
     }
 
