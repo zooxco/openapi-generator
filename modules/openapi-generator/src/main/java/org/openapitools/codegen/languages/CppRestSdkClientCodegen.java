@@ -52,6 +52,8 @@ public class CppRestSdkClientCodegen extends AbstractCppCodegen {
     public static final String DEFAULT_INCLUDE = "defaultInclude";
     public static final String SUPPORTING_FILES_DIRECTORY = "supportingFilesDirectory";
     public static final String SUPPORTING_FILES_NAMESPACE = "supportingFilesNamespace";
+    public static final String GENERATE_GMOCKS_FOR_APIS = "generateGMocksForApis";
+
 
     protected String packageVersion = "1.0.0";
     protected String declspec = "";
@@ -120,11 +122,14 @@ public class CppRestSdkClientCodegen extends AbstractCppCodegen {
                 "The default include statement that should be placed in all headers for including things like the declspec (convention: #include \"Commons.h\" ",
                 this.defaultInclude);
         addOption(SUPPORTING_FILES_DIRECTORY,
-                "The directory where supporting files should be loaded from",
+                "The directory where supporting files should be loaded from.",
                 this.supportingFilesDirectory);
         addOption(SUPPORTING_FILES_NAMESPACE,
-                "The namespace used in supporting files",
+                "The namespace used in supporting files.",
                 this.supportingFilesNamespace);
+        addOption(GENERATE_GMOCKS_FOR_APIS,
+                "Generate Google Mock classes for APIs.",
+                null);
 
         supportingFiles.add(new SupportingFile("modelbase-header.mustache", "", "ModelBase.h"));
         supportingFiles.add(new SupportingFile("modelbase-source.mustache", "", "ModelBase.cpp"));
@@ -223,6 +228,10 @@ public class CppRestSdkClientCodegen extends AbstractCppCodegen {
         // Ensure that the supportingFilesNamespace always ends with "::"
         if(!supportingFilesNamespace.isEmpty() && !supportingFilesNamespace.endsWith("::")) {
             supportingFilesNamespace += "::";
+        }
+
+        if (convertPropertyToBoolean(GENERATE_GMOCKS_FOR_APIS)) {
+            apiTemplateFiles.put("api-gmock.mustache", "GMock.h");
         }
 
         additionalProperties.put("modelNamespaceDeclarations", modelPackage.split("\\."));
