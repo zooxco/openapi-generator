@@ -54,6 +54,8 @@ public:
     static utility::string_t parameterToString(const utility::datetime &value);
     template<class T>
     static utility::string_t parameterToString(const std::vector<T>& value);
+    template<class T>
+    static utility::string_t parameterToString(const std::shared_ptr<T>& value);
 
     pplx::task<web::http::http_response> callApi(
         const utility::string_t& path,
@@ -84,6 +86,13 @@ utility::string_t ApiClient::parameterToString(const std::vector<T>& value)
 
     return ss.str();
 }
+
+template<class T>
+utility::string_t ApiClient::parameterToString(const std::shared_ptr<T>& value)
+{
+    return parameterToString(*value.get());
+}
+
 
 }
 }
